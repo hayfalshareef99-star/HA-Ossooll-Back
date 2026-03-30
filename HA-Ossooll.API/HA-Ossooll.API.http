@@ -1,0 +1,6 @@
+@HA_Ossooll.API_HostAddress = http://localhost:5100
+
+GET {{HA_Ossooll.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
