@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace Ha_Ossooll.Data.Models
+namespace HA_Ossooll.Data.Models
 {
     public class ApplicationUser : IdentityUser
     {
@@ -11,6 +11,6 @@ namespace Ha_Ossooll.Data.Models
         [Required, MaxLength(50)]
         public string LastName { get; set; } = string.Empty;
 
-        // public List<RefreshToken>? RefreshTokens { get; set; }
+        //public List<RefreshToken>? RefreshTokens { get; set; }
     }
 }

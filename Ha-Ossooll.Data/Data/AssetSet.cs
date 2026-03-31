@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ha_Ossooll.Data.Data
+namespace HA_Ossooll.Data.Data
 {
     internal class AssetSet
     {

@@ -1,10 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Extensions.DependencyInjection;
+using HA_Ossooll.Services.IService;
+using HA_Ossooll.Services.Service;
 
-namespace HA_Ossooll.Server.Configurations
+namespace HA_Ossooll.Services.Configurations;
+
+public static class ServiceConfiguration
 {
-    internal class ServicesConfiguration
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
+       // services.AddScoped<
+        //services.AddScoped<
+       // services.AddScoped<
+
+        return services;
     }
 }

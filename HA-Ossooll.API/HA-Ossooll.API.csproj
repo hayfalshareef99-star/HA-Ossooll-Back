@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ha-Ossooll.Data\Ha-Ossooll.Data.csproj" />
+    <ProjectReference Include="..\Ha-Ossooll.Data\HA-Ossooll.Data.csproj" />
     <ProjectReference Include="..\HA-Ossooll.Server\HA-Ossooll.Services.csproj" />
   </ItemGroup>
 
