@@ -1,6 +1,6 @@
 ﻿namespace HA_Ossooll.Data.Models
 {
-    internal class Operations
+    public class Operations
     {
         public class Operation
         {
@@ -10,7 +10,7 @@
 
             public DateTime Date { get; set; }
 
-            public string State { get; set; } = string.Empty;
+            public enum State { get; set; } = string.Empty;//باقي ماكملنا تعريف الحالات
 
             public string Type { get; set; } = string.Empty;
         }
