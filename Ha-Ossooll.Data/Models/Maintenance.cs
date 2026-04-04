@@ -1,4 +1,6 @@
-﻿namespace HA_Ossooll.Data.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace HA_Ossooll.Data.Models
 {
     public class Maintenance
     {
@@ -8,8 +10,9 @@
 
         public decimal Cost { get; set; }
 
-        public int DepartmentId { get; set; }
+        public long StorageId { get; set; }
 
-        public Department Department { get; set; } = null!; 
+        [ForeignKey(nameof(StorageId))]
+        public Storage? Storage { get; set; }
     }
 }

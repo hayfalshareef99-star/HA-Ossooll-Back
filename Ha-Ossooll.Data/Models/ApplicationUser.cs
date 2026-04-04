@@ -10,6 +10,7 @@ namespace HA_Ossooll.Data.Models
 
         [Required, MaxLength(50)]
         public string LastName { get; set; } = string.Empty;
+        public string FullName => $"{FirstName} {LastName}";
 
         //public List<RefreshToken>? RefreshTokens { get; set; }
     }
