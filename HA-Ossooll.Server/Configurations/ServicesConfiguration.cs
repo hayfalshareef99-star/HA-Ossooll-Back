@@ -1,17 +1,15 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using HA_Ossooll.Services.IService;
-using HA_Ossooll.Services.Service;
+﻿using HA_Ossooll.Services.IService;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace HA_Ossooll.Services.Configurations;
-
-public static class ServiceConfiguration
+namespace HA_Ossooll.Services.Configurations
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static class ServiceConfiguration
     {
-       // services.AddScoped<
-        //services.AddScoped<
-       // services.AddScoped<
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthService, AuthService>();
 
-        return services;
+            return services;
+        }
     }
 }

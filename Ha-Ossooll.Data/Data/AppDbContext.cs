@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace HA_Ossooll.Data.Data
 {
@@ -26,7 +27,10 @@ namespace HA_Ossooll.Data.Data
         {
             if (!builder.IsConfigured)
             {
-                builder.UseSqlServer(DBConnectionString);
+                builder.UseMySql(
+    DBConnectionString,
+    ServerVersion.AutoDetect(DBConnectionString)
+);
             }
         }
 

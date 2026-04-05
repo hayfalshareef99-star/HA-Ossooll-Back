@@ -1,35 +1,29 @@
+using HA_Ossooll.API.Extensions;
 using HA_Ossooll.Data.Configurations;
 using HA_Ossooll.Data.Data;
 using HA_Ossooll.Data.Models;
+using HA_Ossooll.Services.Configurations;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
-
-// Database
+// Add services
 builder.Services.AddProjectDataLayer(builder.Configuration);
 
-// Identity
-builder.Services
-    .AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddAuthorization();
+builder.Services.AddApplicationServices();
+builder.Services.AddApiLayer(builder.Configuration);
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,6 +1,7 @@
-﻿namespace HA_Ossooll.Data.Data;
-
-internal class ConnectionString
+﻿namespace HA_Ossooll.Data.Data
 {
-    public const string TestString = "Server=.;Database=HA_OssoollDb;Trusted_Connection=True;TrustServerCertificate=True";
+    public static class ConnectionString
+    {
+        public const string TestString = "";
+    }
 }

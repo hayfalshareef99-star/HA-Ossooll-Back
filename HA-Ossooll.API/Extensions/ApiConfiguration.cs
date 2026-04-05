@@ -1,50 +1,39 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using HA_Ossooll.Data.Data;
-using HA_Ossooll.Data.Models;
-using System.Text;
+
 namespace HA_Ossooll.API.Extensions
 {
     public static class ApiConfiguration
     {
         public static IServiceCollection AddApiLayer(this IServiceCollection services, IConfiguration configuration)
         {
-            #region Configure Authentication
-            services.Configure<JWT>(configuration.GetSection("JWT"));
+            var jwtKey = configuration["JWT:Key"];
 
-            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
-            #endregion
+            if (string.IsNullOrWhiteSpace(jwtKey))
+                throw new Exception("JWT:Key is missing from appsettings.json");
 
-            services.AddControllers();
-            services.AddOpenApi();
-
-            #region This section to enable project to use auth by jwt (Bearer jwtToken) 
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(o =>
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    o.RequireHttpsMetadata = false;
-                    o.SaveToken = false;
-                    o.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidIssuer = configuration["JWT:Issuer"],
-                        ValidAudience = configuration["JWT:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"])),
-                        ClockSkew = TimeSpan.Zero
-                    };
-                });
-            #endregion
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            services.AddAuthorization();
 
             return services;
         }
     }
 }
-
