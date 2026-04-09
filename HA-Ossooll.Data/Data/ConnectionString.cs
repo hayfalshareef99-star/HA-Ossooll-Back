@@ -2,6 +2,8 @@
 {
     public static class ConnectionString
     {
-        public const string TestString = "";
+        public static string TestString =>
+            Environment.GetEnvironmentVariable("MYSQL_URL")
+            ?? throw new Exception("MYSQL_URL not found");
     }
 }

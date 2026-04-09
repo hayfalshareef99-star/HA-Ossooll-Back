@@ -2,14 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace HA_Ossooll.Data.Data
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
-        public const string DBConnectionString = ConnectionString.TestString;
-
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
@@ -27,10 +24,12 @@ namespace HA_Ossooll.Data.Data
         {
             if (!builder.IsConfigured)
             {
+                var connectionString = ConnectionString.TestString;
+
                 builder.UseMySql(
-    DBConnectionString,
-    ServerVersion.AutoDetect(DBConnectionString)
-);
+                    connectionString,
+                    ServerVersion.AutoDetect(connectionString)
+                );
             }
         }
 
