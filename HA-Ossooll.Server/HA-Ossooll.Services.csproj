@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.20" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
@@ -15,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-   <ProjectReference Include="..\Ha-Ossooll.Data\Ha-Ossooll.Data.csproj" />
+    <ProjectReference Include="..\Ha-Ossooll.Data\Ha-Ossooll.Data.csproj" />
   </ItemGroup>
 
 </Project>
