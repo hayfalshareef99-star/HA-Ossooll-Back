@@ -21,23 +21,30 @@ namespace HA_Ossooll.Services
             _configuration = configuration;
         }
 
+        // ================= REGISTER =================
         public async Task<AuthModel> RegisterAsync(RegisterModel model)
         {
-            if (await _userManager.FindByEmailAsync(model.Email) != null)
+            var email = model.Email.Trim().ToLower();   // ✅ مهم
+            var username = model.Username.Trim();
+            var firstName = model.FirstName.Trim();
+            var lastName = model.LastName.Trim();
+            var password = model.Password;
+
+            if (await _userManager.FindByEmailAsync(email) != null)
                 return new AuthModel { Message = "Email already exists ❌" };
 
-            if (await _userManager.FindByNameAsync(model.Username) != null)
+            if (await _userManager.FindByNameAsync(username) != null)
                 return new AuthModel { Message = "Username already exists ❌" };
 
             var user = new ApplicationUser
             {
-                Email = model.Email,
-                UserName = model.Username,
-                FirstName = model.FirstName,
-                LastName = model.LastName
+                Email = email,
+                UserName = username,
+                FirstName = firstName,
+                LastName = lastName
             };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, password);
 
             if (!result.Succeeded)
             {
@@ -54,15 +61,27 @@ namespace HA_Ossooll.Services
             };
         }
 
+        // ================= LOGIN =================
         public async Task<AuthModel> LoginAsync(TokenRequestModel model)
         {
             var authModel = new AuthModel();
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var email = model.Email.Trim().ToLower();   // ✅ الحل الرئيسي هنا
+            var password = model.Password;
 
-            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
             {
-                authModel.Message = "Email or Password is incorrect ❌";
+                authModel.Message = "User not found ❌";
+                return authModel;
+            }
+
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, password);
+
+            if (!isPasswordValid)
+            {
+                authModel.Message = "Password is incorrect ❌";
                 return authModel;
             }
 
@@ -78,18 +97,19 @@ namespace HA_Ossooll.Services
             return authModel;
         }
 
+        // ================= JWT =================
         private JwtSecurityToken CreateJwtToken(ApplicationUser user)
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? string.Empty),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+                Encoding.UTF8.GetBytes(_configuration["JWT:Key"]!));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -97,7 +117,9 @@ namespace HA_Ossooll.Services
                 issuer: _configuration["JWT:Issuer"],
                 audience: _configuration["JWT:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddDays(double.Parse(_configuration["JWT:DurationInDays"])),
+                expires: DateTime.Now.AddDays(
+                    double.Parse(_configuration["JWT:DurationInDays"]!)
+                ),
                 signingCredentials: creds
             );
 
