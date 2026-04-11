@@ -10,9 +10,9 @@ namespace HA_Ossooll.Data.Models
 
         public decimal Cost { get; set; }
 
-        public long StorageId { get; set; }
+        public long ProductId { get; set; }
 
-        [ForeignKey(nameof(StorageId))]
-        public Storage? Storage { get; set; }
+        [ForeignKey(nameof(ProductId))]
+        public Product? Product { get; set; }
     }
 }

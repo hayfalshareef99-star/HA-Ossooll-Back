@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Ha_Ossooll.Data.Migrations
+namespace HA_Ossooll.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMySql : Migration
+    public partial class InitialClean : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -167,28 +167,6 @@ namespace Ha_Ossooll.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Maintenances",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Cost = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    StorageId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Maintenances", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Maintenances_Storages_StorageId",
-                        column: x => x.StorageId,
-                        principalTable: "Storages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -320,6 +298,34 @@ namespace Ha_Ossooll.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Maintenances",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Cost = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    StorageId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Maintenances", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Maintenances_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Maintenances_Storages_StorageId",
+                        column: x => x.StorageId,
+                        principalTable: "Storages",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Departments",
                 columns: table => new
                 {
@@ -378,6 +384,11 @@ namespace Ha_Ossooll.Data.Migrations
                 name: "IX_Employees_ManagerId",
                 table: "Employees",
                 column: "ManagerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Maintenances_ProductId",
+                table: "Maintenances",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Maintenances_StorageId",
@@ -459,9 +470,6 @@ namespace Ha_Ossooll.Data.Migrations
                 name: "Operations");
 
             migrationBuilder.DropTable(
-                name: "Products");
-
-            migrationBuilder.DropTable(
                 name: "RoleClaim");
 
             migrationBuilder.DropTable(
@@ -477,19 +485,22 @@ namespace Ha_Ossooll.Data.Migrations
                 name: "UserToken");
 
             migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
                 name: "OperationTypes");
-
-            migrationBuilder.DropTable(
-                name: "ProductTypes");
-
-            migrationBuilder.DropTable(
-                name: "Storages");
 
             migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "ProductTypes");
+
+            migrationBuilder.DropTable(
+                name: "Storages");
 
             migrationBuilder.DropTable(
                 name: "Employees");

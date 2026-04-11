@@ -1,4 +1,5 @@
 using HA_Ossooll.Data.Data;
+using HA_Ossooll.Data.DTOs;
 using HA_Ossooll.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,20 @@ namespace HA_Ossooll.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var data = await _context.Maintenances
-                .Include(m => m.Storage)
+                .Include(m => m.Product)
+                .ThenInclude(p => p.Storage)
+                .Include(m => m.Product)
+                .ThenInclude(p => p.ProductType)
+                .Select(m => new MaintenanceDto
+                {
+                    Id = m.Id,
+                    Date = m.Date,
+                    Cost = m.Cost,
+                    ProductId = m.ProductId,
+                    ProductName = m.Product != null ? m.Product.Name : "",
+                    StorageName = m.Product != null && m.Product.Storage != null ? m.Product.Storage.Name : "",
+                    ProductTypeName = m.Product != null && m.Product.ProductType != null ? m.Product.ProductType.Name : ""
+                })
                 .ToListAsync();
 
             return Ok(data);
@@ -32,8 +46,22 @@ namespace HA_Ossooll.API.Controllers
         public async Task<IActionResult> GetById(long id)
         {
             var item = await _context.Maintenances
-                .Include(m => m.Storage)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(m => m.Product)
+                .ThenInclude(p => p.Storage)
+                .Include(m => m.Product)
+                .ThenInclude(p => p.ProductType)
+                .Where(m => m.Id == id)
+                .Select(m => new MaintenanceDto
+                {
+                    Id = m.Id,
+                    Date = m.Date,
+                    Cost = m.Cost,
+                    ProductId = m.ProductId,
+                    ProductName = m.Product != null ? m.Product.Name : "",
+                    StorageName = m.Product != null && m.Product.Storage != null ? m.Product.Storage.Name : "",
+                    ProductTypeName = m.Product != null && m.Product.ProductType != null ? m.Product.ProductType.Name : ""
+                })
+                .FirstOrDefaultAsync();
 
             if (item == null)
                 return NotFound();
@@ -42,16 +70,23 @@ namespace HA_Ossooll.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Maintenance model)
+        public async Task<IActionResult> Create([FromBody] MaintenanceDto model)
         {
-            _context.Maintenances.Add(model);
+            var maintenance = new Maintenance
+            {
+                Date = model.Date,
+                Cost = model.Cost,
+                ProductId = model.ProductId
+            };
+
+            _context.Maintenances.Add(maintenance);
             await _context.SaveChangesAsync();
 
-            return Ok(model);
+            return Ok(maintenance);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(long id, [FromBody] Maintenance model)
+        public async Task<IActionResult> Update(long id, [FromBody] MaintenanceDto model)
         {
             var existing = await _context.Maintenances.FindAsync(id);
 
@@ -60,7 +95,7 @@ namespace HA_Ossooll.API.Controllers
 
             existing.Date = model.Date;
             existing.Cost = model.Cost;
-            existing.StorageId = model.StorageId;
+            existing.ProductId = model.ProductId;
 
             await _context.SaveChangesAsync();
 

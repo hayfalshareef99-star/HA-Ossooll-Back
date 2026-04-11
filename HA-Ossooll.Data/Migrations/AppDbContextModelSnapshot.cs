@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Ha_Ossooll.Data.Migrations
+namespace HA_Ossooll.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -150,10 +150,15 @@ namespace Ha_Ossooll.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<long>("StorageId")
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("StorageId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("StorageId");
 
@@ -413,13 +418,17 @@ namespace Ha_Ossooll.Data.Migrations
 
             modelBuilder.Entity("HA_Ossooll.Data.Models.Maintenance", b =>
                 {
-                    b.HasOne("HA_Ossooll.Data.Models.Storage", "Storage")
-                        .WithMany("Maintenances")
-                        .HasForeignKey("StorageId")
+                    b.HasOne("HA_Ossooll.Data.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Storage");
+                    b.HasOne("HA_Ossooll.Data.Models.Storage", null)
+                        .WithMany("Maintenances")
+                        .HasForeignKey("StorageId");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("HA_Ossooll.Data.Models.Operation", b =>

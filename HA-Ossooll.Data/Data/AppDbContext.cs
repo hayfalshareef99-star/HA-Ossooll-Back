@@ -76,9 +76,9 @@ namespace HA_Ossooll.Data.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Maintenance>()
-                .HasOne(m => m.Storage)
-                .WithMany(s => s.Maintenances)
-                .HasForeignKey(m => m.StorageId)
+                .HasOne(m => m.Product)
+                .WithMany()
+                .HasForeignKey(m => m.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Operation>()
