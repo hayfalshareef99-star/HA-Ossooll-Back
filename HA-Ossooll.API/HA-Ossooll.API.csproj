@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ha-Ossooll.Data\HA-Ossooll.Data.csproj" />
+    <ProjectReference Include="..\Temp-Data\Temp-Data.csproj" />
     <ProjectReference Include="..\HA-Ossooll.Server\HA-Ossooll.Services.csproj" />
   </ItemGroup>
 
