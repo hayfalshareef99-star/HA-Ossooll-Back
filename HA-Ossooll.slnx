@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="HA-Ossooll.API\HA-Ossooll.API.csproj" />
+  <Project Path="HA-Ossooll.Server\HA-Ossooll.Services.csproj" />
+  <Project Path="HA-Ossooll.Data\HA-Ossooll.Data.csproj" />
+</Solution>
