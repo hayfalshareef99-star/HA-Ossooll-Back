@@ -4,6 +4,7 @@ using HA_Ossooll.Data.Data;
 using HA_Ossooll.Data.Models;
 using HA_Ossooll.Services.Configurations;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 
@@ -69,6 +70,12 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
 
 app.UseRouting();
 app.UseCors("AllowFrontend");
