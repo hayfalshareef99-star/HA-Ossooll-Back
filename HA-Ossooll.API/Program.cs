@@ -30,11 +30,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins(
-                "https://ha-ossool-project.vercel.app",
-                "http://localhost:5173",
-                "https://localhost:5173"
-            )
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -80,7 +76,7 @@ using (var scope = app.Services.CreateScope())
 app.UseRouting();
 app.UseCors("AllowFrontend");
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
