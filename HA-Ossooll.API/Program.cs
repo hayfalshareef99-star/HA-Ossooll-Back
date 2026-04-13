@@ -28,16 +28,27 @@ builder.Services.AddControllers()
     });
 
 // ✅ CORS الصحيح
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy
-            .WithOrigins("https://ha-ossool-project.vercel.app")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
+//builder.Services.AddCors(options =>
+//{
+  //  options.AddPolicy("AllowFrontend", policy =>
+//    {
+      //  policy
+         //   .WithOrigins("https://ha-ossool-project.vercel.app")
+         //   .AllowAnyHeader()
+         //   .AllowAnyMethod();
+  //  });
+//});
+
+  builder.Services.AddCors(options =>
+  {
+      options.AddPolicy("AllowFrontend", builder =>
+      {
+          builder
+              .AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+      });
+  });
 
 builder.Services.AddEndpointsApiExplorer();
 
