@@ -10,6 +10,8 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ================== Services ==================
+
 builder.Services.AddProjectDataLayer(builder.Configuration);
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -25,18 +27,21 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
+// ✅ CORS مضبوط على الفرونت فقط
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .AllowAnyOrigin()
+            .WithOrigins("https://ha-ossool-project.vercel.app")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials(); // مهم لو فيه auth
     });
 });
 
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -67,13 +72,34 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+// ================== DB Migration ==================
+
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.Migrate();
 }
 
+// ================== Middleware ==================
+
+// ✅ حل مشكلة OPTIONS في Railway (preflight)
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == "OPTIONS")
+    {
+        context.Response.Headers.Add("Access-Control-Allow-Origin", "https://ha-ossool-project.vercel.app");
+        context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
+        context.Response.Headers.Add("Access-Control-Allow-Methods", "*");
+        context.Response.StatusCode = 200;
+        return;
+    }
+
+    await next();
+});
+
 app.UseRouting();
+
+// ✅ مهم يكون هنا
 app.UseCors("AllowFrontend");
 
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
