@@ -27,7 +27,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
-// ✅ CORS مضبوط على الفرونت فقط
+// ✅ CORS الصحيح
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -35,8 +35,7 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins("https://ha-ossool-project.vercel.app")
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials(); // مهم لو فيه auth
+            .AllowAnyMethod();
     });
 });
 
@@ -82,24 +81,9 @@ using (var scope = app.Services.CreateScope())
 
 // ================== Middleware ==================
 
-// ✅ حل مشكلة OPTIONS في Railway (preflight)
-app.Use(async (context, next) =>
-{
-    if (context.Request.Method == "OPTIONS")
-    {
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "https://ha-ossool-project.vercel.app");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
-        context.Response.Headers.Add("Access-Control-Allow-Methods", "*");
-        context.Response.StatusCode = 200;
-        return;
-    }
-
-    await next();
-});
-
 app.UseRouting();
 
-// ✅ مهم يكون هنا
+// ✅ أهم سطر (CORS لازم يكون هنا)
 app.UseCors("AllowFrontend");
 
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())

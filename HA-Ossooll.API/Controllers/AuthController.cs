@@ -1,11 +1,12 @@
 using HA_Ossooll.Data.DTOs;
 using HA_Ossooll.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HA_Ossooll.API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController, AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
